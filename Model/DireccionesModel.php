@@ -8,29 +8,59 @@ class DireccionesModel
 {
 	function liste()
 	{
-		$this->dirs = array();
-		$archivo = fopen('direcciones.txt', 'r');
-		while($registro = fgets($archivo))
-		{
-			$contacto = explode(':', $registro);
-			$this->dirs[] = new ContactoModel($contacto[0], $contacto[1], $contacto[2],$contacto[3],$contacto[4],$contacto[5],$contacto[6]);
-		} // while
-		fclose($archivo);
-		return $this->dirs;
+		$json = file_get_contents('direcciones.txt');
+		return json_decode($json);
 	}
 
 	function grabe(ContactoModel $contacto)
 	{
-		$archivo = fopen('direcciones.txt', 'a+');
-		if (fwrite($archivo, $contacto->serialice()."\n"))
-		{
-			fclose($archivo);
-			return true;
+		$json = file_get_contents('direcciones.txt');
+		$direcciones = json_decode($json);
+		array_push($direcciones, $contacto);
+		return file_put_contents('direcciones.txt', json_encode($direcciones)); 
+	}
+
+	function busque($correo)
+	{
+		$json = file_get_contents('direcciones.txt');
+		$direcciones = json_decode($json);
+		$found = false;  
+		foreach($direcciones as $key => $value) {
+    		if ($value->correo == $correo) {
+				$found = true;
+				break;
+			}
 		}
-		else
-		{
-			fclose($archivo);
-			return false;
+		return $direcciones[$key];
+	}
+
+	function actualice(ContactoModel $contacto){
+		$json = file_get_contents('direcciones.txt');
+		$direcciones = json_decode($json);
+		$found = false;  
+		foreach($direcciones as $key => $value) {
+    		if ($value->correo == $contacto->correo) {
+				$found = true;
+				break;
+			}
 		}
+		if ($found) $direcciones[$key] = $contacto;
+		file_put_contents('direcciones.txt', json_encode($direcciones)); 
+		return true;
+	}
+
+	function borre( $correo){
+		$json = file_get_contents('direcciones.txt');
+		$direcciones = json_decode($json);
+		$found = false;  
+		foreach($direcciones as $key => $value) {
+    		if ($value->correo == $correo) {
+				$found = true;
+				break;
+			}
+		}
+        if ($found) unset($direcciones[$key]);
+		file_put_contents('direcciones.txt', json_encode($direcciones)); 
+		return true;
 	}
 }

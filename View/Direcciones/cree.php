@@ -1,9 +1,10 @@
 <html>
 <head>
 	<title>Direcciones de contactos, bienvenido</title>
+  <meta charset="UTF-8"/>
 </head>
 <body>
-<h1>Nueva direccion</h1>
+<h1>Nueva dirección</h1>
 <p><a href="<?php echo $_SERVER['PHP_SELF']; ?>?action=index">Ver los contactos disponibles.</a></p>
 <form name="direccion" id="direccion" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
   <input name="action" type="hidden" value="cree" />
